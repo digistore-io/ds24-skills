@@ -1,0 +1,91 @@
+{
+  "passphrase": "s3cret-passphrase",
+  "algorithm": "sha512",
+  "vectors": [
+    {
+      "name": "minimal",
+      "uppercaseKeys": false,
+      "params": {
+        "order_id": "ORD-1",
+        "product_id": "42"
+      },
+      "expected": "9A23DE2603A33D17D935908580B5DB90C452DE8E68556E2A4AD96F1C3EC3BFD2EE3AE47B819B96286812224FBCED943D0ACF48C8C20CA57570E2263B6ABAF099"
+    },
+    {
+      "name": "unsorted-input",
+      "uppercaseKeys": false,
+      "params": {
+        "amount": "47.00",
+        "product_id": "42",
+        "order_id": "ORD-1"
+      },
+      "expected": "D10912B7772A60B4CCA3F9B1BF1D5AE5E32D75FC75FCBC44BFD265D7890B07C3ACA99F1C6DB50A69AF4762A5C4C1812A4CF7C388367F93682F846AE74E685025"
+    },
+    {
+      "name": "empty-values-skipped",
+      "uppercaseKeys": false,
+      "params": {
+        "order_id": "ORD-1",
+        "note": "",
+        "product_id": "42"
+      },
+      "expected": "9A23DE2603A33D17D935908580B5DB90C452DE8E68556E2A4AD96F1C3EC3BFD2EE3AE47B819B96286812224FBCED943D0ACF48C8C20CA57570E2263B6ABAF099"
+    },
+    {
+      "name": "sha-sign-excluded",
+      "uppercaseKeys": false,
+      "params": {
+        "order_id": "ORD-1",
+        "product_id": "42",
+        "sha_sign": "DEADBEEF"
+      },
+      "expected": "9A23DE2603A33D17D935908580B5DB90C452DE8E68556E2A4AD96F1C3EC3BFD2EE3AE47B819B96286812224FBCED943D0ACF48C8C20CA57570E2263B6ABAF099"
+    },
+    {
+      "name": "uppercase-keys",
+      "uppercaseKeys": true,
+      "params": {
+        "order_id": "ORD-1",
+        "product_id": "42"
+      },
+      "expected": "650DFA85696C764CF5276397D48D5F1E7D1D0D42D2836E459CAE83A36814DF67E90C59A508B73D98280400758A65381D09BFA36D7F575345639D24F269A666A2"
+    },
+    {
+      "name": "utf8-value",
+      "uppercaseKeys": false,
+      "params": {
+        "order_id": "ORD-2",
+        "buyer_first_name": "Jörg",
+        "buyer_last_name": "Müller-Straße"
+      },
+      "expected": "2F30138F4508E37C322DF849C4421E0F2B876FD065762B3257253B6BB22256F10BE479F442E3AE5B0922A3FE12A32355AB41B830481F2B4835F92A1B05E604B5"
+    },
+    {
+      "name": "special-chars",
+      "uppercaseKeys": false,
+      "params": {
+        "order_id": "ORD-3",
+        "custom": "m:abc+def/ghi=jkl",
+        "buyer_email": "a+b@example.de"
+      },
+      "expected": "A3696FD825F03952BBA847F87B5622BE370CBC312406E58647E809D90BCF613368AB228EC45C69B25D9A7EF8F4288BF08E5B66A774A3C49E5FC3FCCB189CE192"
+    },
+    {
+      "name": "realistic-payment",
+      "uppercaseKeys": false,
+      "params": {
+        "event": "on_payment",
+        "order_id": "AB12CD34",
+        "product_id": "512345",
+        "product_name": "Basis Monatlich",
+        "amount": "47.00",
+        "currency": "EUR",
+        "buyer_email": "kunde@example.de",
+        "billing_type": "subscription",
+        "pay_sequence_no": "1",
+        "purchase_id": "PID-99"
+      },
+      "expected": "311EEF3ADD521A7A9ECA00DB122055DAE85BDFC15CD7371748D42E0233D93FAEA80A58E9056BCBF8BB495B1A19F27D5E471714435FFDD87DC7C29D0BEE076B5D"
+    }
+  ]
+}
