@@ -10,14 +10,14 @@ and anything else that reads the `SKILL.md` convention.
 
 This is not a template and not a library. It is the part of a payment
 integration that an agent cannot guess — the signature algorithm, the event
-semantics, the failure modes — plus a script that **proves** the result is
-correct rather than asserting it.
+semantics, the failure modes — plus **frozen test vectors and a specification of
+what has to be proven**, so the result gets demonstrated rather than asserted.
 
 ---
 
 ## Install
 
-**No git, no terminal on the two platforms that do not have one.** Pick your row.
+**Neither Lovable nor Manus needs git or a terminal from you.** Pick your row.
 
 ### Lovable — paste one address
 
@@ -50,7 +50,7 @@ npx skills add digistore-io/ds24-skills
 
 It installs into `.agents/skills/` — which is exactly where Replit's Agent looks
 — and links them into `.claude/skills/` for Claude Code. The bundled adapters,
-references and the verifier come along with it.
+references, test vectors and the ready-made checker come along with it.
 
 <details>
 <summary>Rather not run an npx package?</summary>
@@ -80,7 +80,7 @@ by name, `ds24-billing`.
 |---|---|
 | **`ds24-billing`** | the entry point: works out what already exists and starts the right next skill |
 | **`ds24-products`** | API key, creating products, registering the IPN connection, approval |
-| **`ds24-ipn`** | the webhook: signature, events, idempotency — **and the verifier** |
+| **`ds24-ipn`** | the webhook: signature, events, idempotency — **and how to prove it** |
 | **`ds24-checkout`** | the buy link, the price as a payment plan, carrying the buyer's identity |
 | **`ds24-entitlements`** | the access record and the one function the app asks |
 | **`ds24-tokens`** | prepaid credits, spending them, automatic top-up |
@@ -104,12 +104,13 @@ by name, `ds24-billing`.
 
 Text cannot guarantee that an agent built the signature check correctly, and
 "probably right" is worthless for a payment rail. So the pack ships a
-**specification of what has to be proven** — `skills/ds24-ipn/references/verification.md`
-— and the agent builds the check in whatever runs on its platform.
+**specification of what has to be proven** —
+[`verification.md`](skills/ds24-ipn/references/verification.md) — and the agent
+builds the check in whatever runs on its platform.
 
 **The part that may not be improvised** is the eight frozen vectors in
-`skills/ds24-ipn/scripts/vectors.json`. Any implementation has to reproduce them
-exactly, and nobody may recompute them with their own code:
+[`vectors.json`](skills/ds24-ipn/scripts/vectors.json). Any implementation has to
+reproduce them exactly, and nobody may recompute them with their own code:
 
 > The bug they catch — signing with uppercased field names — produces an
 > implementation that agrees with itself perfectly and rejects **every real
@@ -141,6 +142,7 @@ Either way, this is what gets proven:
 
 | Case | Must |
 |---|---|
+| **all eight vectors** | **be reproduced exactly** — checked first, before anything else |
 | correctly signed `on_payment` | be accepted, access granted |
 | one flipped byte in the signature | be rejected |
 | no signature, or no passphrase | be rejected (fail closed) |
@@ -151,11 +153,10 @@ Either way, this is what gets proven:
 | `on_rebill_cancelled` | leave access **unchanged** |
 | a payment redelivered after a refund | **not** revive access |
 
-Checked from outside, the access half needs `--probe`: a small, token-protected
-endpoint answering `{"access": true|false}` for an `order_id`, which you delete
-once the run is green. Without it those checks report `SKIP` and say so — they
-are never silently counted as passes. A test built *inside* the app skips this
-step entirely; it reads the record itself.
+The `--probe` above is what the access half needs when checking from outside: a
+small, token-protected endpoint answering `{"access": true|false}` for an
+`order_id`, deleted again once the run is green. Leave it out and those rows are
+reported as `SKIP` — never silently counted as passes.
 
 To check the shipped signature modules on their own, where a shell exists:
 
@@ -165,7 +166,8 @@ node .agents/skills/ds24-ipn/scripts/check-adapters.mjs
 
 ## Adapters
 
-`skills/ds24-ipn/adapters/` holds two kinds of file, and the difference matters:
+[`skills/ds24-ipn/adapters/`](skills/ds24-ipn/adapters) holds two kinds of file,
+and the difference matters:
 
 **The signature — copy verbatim, never edit:**
 
@@ -185,7 +187,7 @@ node .agents/skills/ds24-ipn/scripts/check-adapters.mjs
 ## Updating
 
 **On Lovable and Manus, skills live in your workspace, not in your repository —
-so they do not update themselves.** Whoever imported v1 keeps v1 until they
+so they do not update themselves.** Whatever you imported stays until you
 import again. Every skill therefore starts by comparing its own `VERSION`
 against
 
@@ -205,7 +207,7 @@ npx skills add digistore-io/ds24-skills
 
 - **It is not an app.** No authentication, no user table, no UI. Your agent
   builds those; these skills make the money part correct.
-- **The verifier covers the money path**, not whether every page of your app
+- **The verification covers the money path**, not whether every page of your app
   checks permissions.
 - **It is preparation, not legal advice.** `ds24-compliance` gets the obvious
   things right and names what a lawyer should see.
