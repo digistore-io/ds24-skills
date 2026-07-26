@@ -59,7 +59,7 @@ Match the symptom, do not go through the list:
 
 | Symptom | Where it lives |
 |---|---|
-| "signature invalid" on every IPN | **`ds24-ipn`** — almost always the field-name case; read `references/ipn-protocol.md` |
+| "signature invalid" on every IPN | **`ds24-ipn`** — almost always the field-name case; its own `ipn-protocol.md` reference has it |
 | the purchase worked, nothing happened in the app | **`ds24-products`** — the IPN connection points at the wrong URL, or was never registered. On Supabase/Lovable Cloud: `verify_jwt` is still on and every call gets a 401 |
 | a cancelled customer lost access immediately | **`ds24-ipn`** — `on_rebill_cancelled` was treated as an ending. It does nothing |
 | a refunded customer still has access | **`ds24-ipn`** — the refund event is not handled, or a redelivered payment reopened it |
