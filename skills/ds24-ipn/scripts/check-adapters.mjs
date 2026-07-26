@@ -78,7 +78,12 @@ for v in data["vectors"]:
     out.append({"name": v["name"], "ok": got == v["expected"], "got": got, "expected": v["expected"]})
 print(json.dumps(out))
 `;
-  const raw = execFileSync(python, ["-c", script], { encoding: "utf8" });
+  // -B: kein Bytecode. Ohne das legt Python ein __pycache__ NEBEN signature.py
+  // an — also mitten in den Skill-Ordner, den der Nutzer gerade installiert hat.
+  // Auf Lovable und Manus zaehlt jede Datei gegen das Import-Limit, und eine
+  // .pyc, die niemand angefordert hat, ist dort schlicht Muell. Ein Pruefer darf
+  // nichts hinterlassen.
+  const raw = execFileSync(python, ["-B", "-c", script], { encoding: "utf8" });
   for (const r of JSON.parse(raw)) {
     report("signature.py", r.name, r.ok,
       r.ok ? null : `expected ${r.expected}\n    got      ${r.got}`);
