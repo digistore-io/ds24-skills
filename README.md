@@ -17,46 +17,57 @@ correct rather than asserting it.
 
 ## Install
 
-### Lovable
+**No git, no terminal on the two platforms that do not have one.** Pick your row.
 
-*Skills → Add → Import from GitHub* → `https://github.com/digistore-io/ds24-skills`
+### Lovable — paste one address
 
-Import the whole repository, or a single skill folder if you only want one.
-Then just describe what you want to sell; Lovable loads the matching skill when
-it becomes relevant.
+*Skills → Add → Import from GitHub*, and paste:
 
-### Manus
-
-*Skills* in the left sidebar → **+ Add → Upload a skill** → drop in a downloaded
-folder or `.zip` of this repository. Invoke one directly with `/ds24-billing`.
-
-```bash
-git clone https://github.com/digistore-io/ds24-skills.git
-# then upload the skills/ folder (or a single skill) in the Manus UI
+```
+https://github.com/digistore-io/ds24-skills
 ```
 
-### Replit
+That is the whole installation. Lovable pulls the skills straight from the
+repository — no download, no unpacking, nothing installed on your machine.
 
-Skills live in the project:
+### Manus — download and upload
 
-```bash
-mkdir -p .agents/skills
-git clone --depth 1 https://github.com/digistore-io/ds24-skills.git /tmp/ds24
-cp -r /tmp/ds24/skills/* .agents/skills/
-```
+1. **[Download the pack as a ZIP](https://github.com/digistore-io/ds24-skills/archive/refs/heads/main.zip)**
+   *(github.com/digistore-io/ds24-skills/archive/refs/heads/main.zip)*
+2. Unpack it. Inside you get `ds24-skills-main/skills/` with one folder per skill.
+3. In Manus: *Skills* in the left sidebar → **+ Add → Upload a skill** → drop in
+   that `skills` folder.
 
-### v0, Claude Code, Codex and other CLI agents
+If Manus wants one skill at a time, start with **`ds24-billing`** (the entry
+point) and **`ds24-ipn`** (the one that does the work) — the rest can follow
+whenever you need them. Invoke one directly with `/ds24-billing`.
+
+### Replit, v0, Claude Code, Codex — one command
 
 ```bash
 npx skills add digistore-io/ds24-skills
 ```
 
-or, for Claude Code specifically:
+It installs into `.agents/skills/` — which is exactly where Replit's Agent looks
+— and links them into `.claude/skills/` for Claude Code. The bundled adapters,
+references and the verifier come along with it.
+
+<details>
+<summary>Rather not run an npx package?</summary>
+
+Fair — the installer says it itself: skills run with full agent permissions, so
+read them first. The manual route is a copy:
 
 ```bash
-git clone --depth 1 https://github.com/digistore-io/ds24-skills.git /tmp/ds24
-cp -r /tmp/ds24/skills/* .claude/skills/
+curl -sSL -o /tmp/ds24.zip https://github.com/digistore-io/ds24-skills/archive/refs/heads/main.zip
+unzip -q /tmp/ds24.zip -d /tmp
+mkdir -p .agents/skills && cp -r /tmp/ds24-skills-main/skills/* .agents/skills/
 ```
+
+Use `.claude/skills/` instead of `.agents/skills/` for Claude Code.
+</details>
+
+---
 
 Then say **"add Digistore24 billing to this app"** — or invoke the entry point
 by name, `ds24-billing`.
@@ -163,8 +174,13 @@ against
 https://raw.githubusercontent.com/digistore-io/ds24-skills/main/VERSION
 ```
 
-and says something when they differ. On Replit, v0 and Claude Code the skills
-sit in the project, so a `git pull` is the whole story.
+and says something when they differ.
+
+Everywhere else, updating is the same command that installed them:
+
+```bash
+npx skills add digistore-io/ds24-skills
+```
 
 ## What this is not
 
