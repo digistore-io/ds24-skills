@@ -50,7 +50,9 @@ access_grants
 ```
 
 The IPN maintains it. Nothing else writes to it except a deliberate manual
-grant. Read **`../ds24-ipn/references/events.md`** for which event does what.
+grant. Which event does what is the event table in the **`ds24-ipn`** skill —
+read it there before writing any of this. If that skill is not installed, this
+one cannot be finished correctly: install it too.
 
 ## Step 2 — one function, asked per feature
 
