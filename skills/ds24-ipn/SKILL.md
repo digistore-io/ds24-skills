@@ -51,6 +51,9 @@ when guessed:
 Do not skim these and write from memory. Every sentence in them is there because
 somebody got it wrong in production.
 
+The third reference, **`references/verification.md`**, is for Step 5 — what has
+to be proven once the endpoint exists. Read it when you get there, not now.
+
 ## Step 2 — copy the signature module, do not write one
 
 `adapters/` holds three signature implementations. **Copy the one that matches
@@ -124,34 +127,44 @@ Write these down in the app's own notes, because they are invisible in review:
 
 ## Step 5 — prove it
 
-Do not tell the user it works. Run the verifier:
+Do not tell the user it works. **`references/verification.md` says what has to be
+proven** — read it and then build the check in whatever runs on this platform.
+
+Two things decide how:
+
+**Is there a shell?** Replit, v0, Manus, Claude Code, Codex — yes. Then run the
+script that ships with this skill; it needs Node and a network connection and
+nothing else:
 
 ```bash
 node scripts/verify-ipn.mjs \
   --url https://<the app>/api/ipn \
-  --passphrase "$DIGISTORE_IPN_PASSPHRASE"
-```
-
-It checks its own signing against the vectors first, then sends real signed
-payloads: a tampered one that must be rejected, a missing signature that must be
-rejected, an uppercase-key signature that must be accepted, and the full access
-lifecycle.
-
-**The access half needs a probe.** The script cannot see your database, so to
-check whether a refund really took access away it needs a small endpoint that
-answers `{"access": true|false}` for an `order_id`:
-
-```bash
-node scripts/verify-ipn.mjs --url … --passphrase … \
+  --passphrase "$DIGISTORE_IPN_PASSPHRASE" \
   --probe https://<the app>/api/ds24-selftest --probe-token "$SECRET"
 ```
 
-Build that endpoint, guard it with a bearer token, run the verifier, then
-**delete it**. It is a test fixture, not a feature. Without it the script says
-`SKIP` on those checks and prints why — do not report a run with skips as a
-clean bill of health.
+**Lovable has none.** Skills carry their bundled files there, but the platform
+reads them rather than executing them — so this script is documentation on
+Lovable, not a tool. Write the equivalent as a **test inside the app** instead
+(a Deno test on Lovable Cloud), which is shape B in `verification.md`. It comes
+out simpler: a test with database access reads the access record directly and
+needs no probe endpoint at all.
 
-To check the shipped signature modules on their own (no app needed):
+**One rule holds either way, and it is the whole point:**
+
+> Your signing must reproduce all eight vectors in `scripts/vectors.json`
+> exactly. **Never compute the expected values with your own code.** The bug
+> this catches — signing with uppercased field names — produces an
+> implementation that agrees with itself perfectly and rejects every real
+> payment. A check written from the same misunderstanding confirms the bug.
+
+If you build the check yourself, that comparison is the first thing it does.
+
+**Report what the run said**, including what it did not cover. A run that
+skipped the access half is a proven signature and unproven semantics — say so
+rather than calling it green.
+
+To check the shipped signature modules on their own, where a shell exists:
 
 ```bash
 node scripts/check-adapters.mjs      # all three runtimes against the vectors

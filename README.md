@@ -100,22 +100,44 @@ by name, `ds24-billing`.
    and the payment that fixes it must *lift* the suspension — an
    insert-if-absent will not.
 
-## The verifier
+## Proving it works
 
 Text cannot guarantee that an agent built the signature check correctly, and
-"probably right" is worthless for a payment rail. So the pack ships a script
-that speaks only HTTP and therefore runs against a Supabase Edge Function on
-Lovable Cloud exactly as it runs against a Next.js route on Replit:
+"probably right" is worthless for a payment rail. So the pack ships a
+**specification of what has to be proven** — `skills/ds24-ipn/references/verification.md`
+— and the agent builds the check in whatever runs on its platform.
+
+**The part that may not be improvised** is the eight frozen vectors in
+`skills/ds24-ipn/scripts/vectors.json`. Any implementation has to reproduce them
+exactly, and nobody may recompute them with their own code:
+
+> The bug they catch — signing with uppercased field names — produces an
+> implementation that agrees with itself perfectly and rejects **every real
+> payment**. A test written by the same author, from the same misunderstanding,
+> confirms the bug. So the expected values come from outside.
+
+They are the same vectors the [Digistore SAAS App
+Template](https://github.com/digistore-io/ds24-appkit) measures itself against.
+
+**Where there is a shell** — Replit, v0, Manus, Claude Code, Codex, or your own
+machine — a ready-made checker ships with the skill. It needs Node and a network
+connection, nothing else, so it runs against a Supabase Edge Function on Lovable
+Cloud exactly as against a Next.js route on Replit. After `npx skills add`:
 
 ```bash
-node skills/ds24-ipn/scripts/verify-ipn.mjs \
+node .agents/skills/ds24-ipn/scripts/verify-ipn.mjs \
   --url https://your-app.example.com/api/ipn \
   --passphrase "$DIGISTORE_IPN_PASSPHRASE" \
   --probe https://your-app.example.com/api/ds24-selftest --probe-token "$SECRET"
 ```
 
-It checks its own signing against frozen vectors first, then sends real signed
-payloads:
+**Lovable has no shell.** Bundled files travel with a skill there, but the
+platform reads them rather than executing them — so the skill has the agent
+write the equivalent as a test *inside the app* instead. That turns out simpler:
+a test with database access reads the access record directly and needs no probe
+endpoint. Or run the script above from your own machine against the deployed URL.
+
+Either way, this is what gets proven:
 
 | Case | Must |
 |---|---|
@@ -129,20 +151,17 @@ payloads:
 | `on_rebill_cancelled` | leave access **unchanged** |
 | a payment redelivered after a refund | **not** revive access |
 
-The access half needs `--probe`: a small, token-protected endpoint answering
-`{"access": true|false}` for an `order_id`, which you delete once the run is
-green. Without it those checks report `SKIP` and say so — they are never
-silently counted as passes.
+Checked from outside, the access half needs `--probe`: a small, token-protected
+endpoint answering `{"access": true|false}` for an `order_id`, which you delete
+once the run is green. Without it those checks report `SKIP` and say so — they
+are never silently counted as passes. A test built *inside* the app skips this
+step entirely; it reads the record itself.
 
-To check the shipped signature modules on their own, in all three runtimes:
+To check the shipped signature modules on their own, where a shell exists:
 
 ```bash
-node skills/ds24-ipn/scripts/check-adapters.mjs
+node .agents/skills/ds24-ipn/scripts/check-adapters.mjs
 ```
-
-The vectors it uses are shared with the [Digistore SAAS App
-Template](https://github.com/digistore-io/ds24-appkit), so the implementations
-here cannot drift away from the one running in production apps.
 
 ## Adapters
 
