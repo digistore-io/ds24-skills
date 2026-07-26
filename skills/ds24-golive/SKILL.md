@@ -37,6 +37,12 @@ The fifth row is the one that bites after a redeploy: a preview URL from
 building the thing is still registered, and every real purchase goes to an
 address that no longer answers.
 
+Re-point it by calling `ipnSetup` again with the **same `domain_id`** and the
+live URL — that updates the connection. A new `domain_id` creates a second one
+and leaves the dead first in place (**`ds24-products`**, Step 4). While you are
+there, check the connection's `product_ids` covers the products you are actually
+about to sell.
+
 ## Step 2 — the signature, one more time, against live
 
 Whatever proved the endpoint during development, run it again **against the live
@@ -67,6 +73,10 @@ only one that exercises Digistore24's side too.
    by hand for the test.
 3. Watch for: the checkout shows **your** price and interval; the thank-you page
    loads; the IPN arrives; the order is stored; **access appears in the app**.
+   If the IPN does not arrive, `getPurchase` (**`ds24-products`**, Step 7) says
+   whether Digistore24 recorded the purchase at all — that is the difference
+   between a failed checkout and a broken connection, and you cannot tell them
+   apart from the app alone.
 4. Sign in as that customer and confirm the paid thing is actually usable.
 
 Then the other half, which people skip and should not:

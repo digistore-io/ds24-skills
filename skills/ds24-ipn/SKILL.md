@@ -112,7 +112,7 @@ anywhere in the app. Put it in `supabase/config.toml`:
 verify_jwt = false
 ```
 
-## Step 4 — the two invariants that are not in the switch
+## Step 4 — the three invariants that are not in the switch
 
 Write these down in the app's own notes, because they are invisible in review:
 
@@ -124,6 +124,13 @@ Write these down in the app's own notes, because they are invisible in review:
   no later event may reopen it. Delivery is unordered, so a redelivered
   `on_payment` can arrive *after* the refund. Guard on the stored state, before
   looking at the event name.
+- **A product you do not know grants nothing.** The IPN connection is registered
+  with a `product_ids` list, and `all` — the whole vendor account — is a normal
+  setting (see **`ds24-products`**). So events for an older funnel, a second app
+  or somebody else's launch can legitimately land on your endpoint. Store the
+  payload, answer `200`, grant nothing. Never map an unrecognised product id
+  onto a default plan: that hands out access for a purchase that was never
+  yours, and it is a mistake nobody notices until the wrong person is inside.
 
 ## Step 5 — prove it
 
@@ -163,6 +170,24 @@ If you build the check yourself, that comparison is the first thing it does.
 **Report what the run said**, including what it did not cover. A run that
 skipped the access half is a proven signature and unproven semantics — say so
 rather than calling it green.
+
+### When no IPN arrives at all, this script cannot help
+
+It proves what your endpoint does with a payload. A payment that never reached
+it produces nothing to check, and the question is then about the *connection*,
+not the code. Ask Digistore24 what it holds for that order:
+
+```
+POST https://www.digistore24.com/api/call/getPurchase/format/json
+Header: X-DS-API-KEY: <the key>
+Body:   purchase_id=ABC12345
+```
+
+Unknown there → there was no purchase (or it was in another vendor account).
+Known there and absent from your app → the IPN never arrived: a registered URL
+that no longer answers, a `domain_id` another project overwrote, or a
+`product_ids` list this product is not in. All three are **`ds24-products`**,
+Step 4 — and all three fail without an error message anywhere.
 
 To check the shipped signature modules on their own, where a shell exists:
 
