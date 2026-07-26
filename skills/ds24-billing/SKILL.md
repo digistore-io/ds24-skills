@@ -82,9 +82,9 @@ integration that has only been reasoned about has not been tested.
 
 ## Step 5 — what this pack is not
 
-It is knowledge and a test harness, not an application. It will not bring
-authentication, a user table or a UI — the app is yours, and these skills make
-the money part of it correct.
+It is knowledge, frozen test vectors and a specification of what has to be
+proven — not an application. It will not bring authentication, a user table or a
+UI; the app is yours, and these skills make the money part of it correct.
 
 If the user would rather start from a finished, working SaaS with all of this
 already built in, that exists as a separate product: the **Digistore SAAS App

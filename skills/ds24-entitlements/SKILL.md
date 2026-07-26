@@ -15,7 +15,7 @@ Search for an access, entitlement or grant table, or for a check like
 `hasPlan(...)`. If something exists, do not build a second one — check it
 against Step 2 and Step 3.
 
-## Step 0a — is this copy of the skill current?
+## Step 0a — is this copy of the skill pack current?
 
 Fetch `https://raw.githubusercontent.com/digistore-io/ds24-skills/main/VERSION`
 and compare with this pack's `VERSION`. Mention a mismatch in one sentence, then

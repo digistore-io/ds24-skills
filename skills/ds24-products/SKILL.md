@@ -23,7 +23,7 @@ Look before you ask:
 Then ask the user only what is genuinely missing. If all three are there, go to
 Step 4 and check the connection rather than rebuilding it.
 
-## Step 0a — is this copy of the skill current?
+## Step 0a — is this copy of the skill pack current?
 
 Fetch `https://raw.githubusercontent.com/digistore-io/ds24-skills/main/VERSION`
 and compare with the `VERSION` file in this pack. Mention a mismatch in one
@@ -118,7 +118,8 @@ Do not report success from an API response alone. Check that:
 3. `DIGISTORE_IPN_PASSPHRASE` is set in the app's environment — not just in a
    local file the deployed app never reads.
 
-Then run the verifier from the **`ds24-ipn`** skill against the endpoint.
+Then prove the endpoint itself — the **`ds24-ipn`** skill says what has to hold
+and how to check it on this platform.
 
 ## Step 7 — what comes next
 

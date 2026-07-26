@@ -23,7 +23,7 @@ Look before you ask. Search the project for `sha_sign`, `on_payment`,
 - **Something found** → do not rebuild it. Go to Step 5 and run the verifier
   against it. Fix what it reports, and nothing else.
 
-## Step 0a — is this copy of the skill current?
+## Step 0a — is this copy of the skill pack current?
 
 Skills you imported into a workspace do not update themselves. Fetch
 `https://raw.githubusercontent.com/digistore-io/ds24-skills/main/VERSION` and

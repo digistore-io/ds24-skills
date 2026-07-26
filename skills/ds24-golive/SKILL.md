@@ -12,7 +12,7 @@ before somebody who is not you finds out that it does not.
 sells access nobody receives, and every one of those is a refund plus a support
 conversation.
 
-## Step 0a — is this copy of the skill current?
+## Step 0a — is this copy of the skill pack current?
 
 Fetch `https://raw.githubusercontent.com/digistore-io/ds24-skills/main/VERSION`
 and compare with this pack's `VERSION`. Mention a mismatch in one sentence, then
@@ -39,12 +39,15 @@ address that no longer answers.
 
 ## Step 2 — the signature, one more time, against live
 
-```bash
-node ../ds24-ipn/scripts/verify-ipn.mjs \
-  --url https://<live domain>/api/ipn \
-  --passphrase "$DIGISTORE_IPN_PASSPHRASE" \
-  --probe https://<live domain>/api/ds24-selftest --probe-token "$SECRET"
-```
+Whatever proved the endpoint during development, run it again **against the live
+domain**. The **`ds24-ipn`** skill holds the how — its verification reference
+gives two shapes, and step 2 needs the one that goes over HTTP from outside: a
+test inside the app exercises the handler, not the deployment, and the failures
+that appear only now are deployment failures. A proxy that rewrites the body, a
+passphrase that never made it into the deployed environment.
+
+If `ds24-ipn` is not installed, install it — this step cannot be done properly
+without what it says.
 
 Green, with **no skips**, or it is not ready. A run with skipped access checks
 means the signature is proven and the semantics are not — say that plainly

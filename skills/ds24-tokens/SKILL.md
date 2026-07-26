@@ -17,7 +17,7 @@ an AI feature is the usual case.
 
 Both can coexist. They do not replace each other.
 
-## Step 0a — is this copy of the skill current?
+## Step 0a — is this copy of the skill pack current?
 
 Fetch `https://raw.githubusercontent.com/digistore-io/ds24-skills/main/VERSION`
 and compare with this pack's `VERSION`. Mention a mismatch in one sentence, then

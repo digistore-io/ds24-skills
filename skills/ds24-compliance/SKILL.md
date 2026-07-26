@@ -12,7 +12,21 @@ useful.
 The trigger is not size. It is **taking money from people in the EU**, which is
 what a Digistore24 integration is for.
 
-## Step 0a — is this copy of the skill current?
+## Step 0 — what is already there?
+
+Look before writing anything. Search the project for an imprint, a privacy
+policy, terms, a cookie banner, a consent table.
+
+**Whatever exists, do not replace it.** Legal pages are frequently the one part
+of an app a lawyer has already seen, and a rewritten privacy policy that reads
+better and says something else is worse than a clumsy accurate one. Read what is
+there, check it against the steps below, and report the gaps — changing the
+wording is the user's decision, not yours.
+
+A **cookie banner that is already installed** is the one thing worth
+questioning out loud: Step 3 explains why an app like this usually needs none.
+
+## Step 0a — is this copy of the skill pack current?
 
 Fetch `https://raw.githubusercontent.com/digistore-io/ds24-skills/main/VERSION`
 and compare with this pack's `VERSION`. Mention a mismatch in one sentence, then
