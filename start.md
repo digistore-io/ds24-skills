@@ -45,12 +45,16 @@ wrong the person will follow instructions that cannot work.
 ### A1. Install the skills
 
 ```bash
-npx skills add digistore-io/ds24-skills
+npx skills add https://github.com/digistore-io/ds24-skills/tree/main/skills
 ```
 
 That puts them in `.agents/skills/` — where Replit's agent looks — and links them
 into `.claude/skills/` for Claude Code. The adapters, the references, the frozen
 vectors and the ready-made checker come along.
+
+**Keep the `/skills` on the end.** Pointed at the repository itself, the
+installer stops at the pack's own `SKILL.md` — a door written for platforms that
+can only take one skill — and installs that instead of the eight.
 
 If the installer is unavailable or unwelcome, the manual route is a copy:
 
@@ -87,24 +91,19 @@ ask — do not print both and leave them to guess.
 **Lovable** — *Skills → Add → Import from GitHub*, and paste:
 
 ```
-https://github.com/digistore-io/ds24-skills/tree/main/skills/ds24-billing
+https://github.com/digistore-io/ds24-skills
 ```
 
-That is enough to start: no download, no unpacking, nothing installed on their
-machine. **Give them that address, not `github.com/digistore-io/ds24-skills`** —
-Lovable reads a whole-repository address as one skill, looks for a `SKILL.md`
-next to the README, does not find one, and refuses the import. The pack is eight
-skills in eight folders, so each has its own address; the other seven are the
-same line with the folder name swapped (`ds24-products`, `ds24-ipn`,
-`ds24-entitlements`, `ds24-checkout`, `ds24-tokens`, `ds24-golive`,
-`ds24-compliance`). They can add those later — `ds24-billing` fetches whatever it
-needs in the meantime.
+That is the whole installation, and it brings all eight: no download, no
+unpacking, nothing installed on their machine. Lovable imports one skill per
+address, so what arrives is the pack's own `SKILL.md` — the door — with the eight
+as its bundled files. It starts `ds24-billing` itself.
 
 **Manus, through the interface** — it has *Skills → + Add → Import from GitHub*
 too, and the same address works. Otherwise: download
 `https://github.com/digistore-io/ds24-skills/archive/refs/heads/main.zip`, unpack
-it, then *Skills → + Add → Upload a skill* and drop in the folder of the skill
-they want, from `ds24-skills-main/skills/`. `ds24-billing` and `ds24-ipn` first.
+it, then *Skills → + Add → Upload a skill* and drop in the `ds24-skills-main`
+folder.
 
 ### B2. Do not make them wait for it
 
@@ -134,8 +133,9 @@ are at the same address with the folder name swapped: `ds24-products`,
 ### B3. Hand over
 
 Once the import is done, the whole instruction is *"add Digistore24 billing to
-this app"* — or the skill by name, `ds24-billing`. From there the skills speak
-for themselves.
+this app"* — or the skill by name: `ds24-skills` after the one-address import
+above, `ds24-billing` if they imported the eight individually. From there the
+skills speak for themselves.
 
 ---
 

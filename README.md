@@ -32,22 +32,28 @@ not. Everything below is the same thing done by hand.
 
 **Neither Lovable nor Manus needs git or a terminal from you.** Pick your row.
 
-### Lovable — paste the address of a skill, not of the repository
+### Lovable — paste one address
 
 *Skills → Add → Import from GitHub*, and paste:
 
 ```
+https://github.com/digistore-io/ds24-skills
+```
+
+That is the whole installation, and it brings **all eight** — no download, no
+unpacking, nothing installed on your machine.
+
+Lovable imports one skill per address, so what arrives is the pack's own
+[`SKILL.md`](SKILL.md): the door. It carries the other eight as bundled files,
+checks whether your copy is current, and starts `ds24-billing`, which works out
+what your project already has. Ask for Digistore24 billing and it takes it from
+there.
+
+Want individual ones as their own `/` commands as well — `/ds24-ipn` while you
+are debugging a webhook, say? Import them the same way, one address each:
+
+```
 https://github.com/digistore-io/ds24-skills/tree/main/skills/ds24-billing
-```
-
-That is enough to start. `ds24-billing` is the entry point, and it knows the
-other seven: where one of them is missing it fetches it from GitHub as it goes.
-No download, no unpacking, nothing installed on your machine.
-
-Import the rest whenever you want them as their own `/` commands — same address,
-folder name swapped:
-
-```
 https://github.com/digistore-io/ds24-skills/tree/main/skills/ds24-products
 https://github.com/digistore-io/ds24-skills/tree/main/skills/ds24-ipn
 https://github.com/digistore-io/ds24-skills/tree/main/skills/ds24-entitlements
@@ -57,35 +63,32 @@ https://github.com/digistore-io/ds24-skills/tree/main/skills/ds24-golive
 https://github.com/digistore-io/ds24-skills/tree/main/skills/ds24-compliance
 ```
 
-> **The bare repository address does not work, and says so clearly:** *"SKILL.md
-> missing in the repository root."* Lovable reads a whole-repository address as
-> **one** skill and looks for `SKILL.md` next to the README. This pack is eight
-> skills, each in its own folder — which is why each has its own address. That
-> layout is deliberate: a `SKILL.md` at the root would make the one-command
-> install below find one skill instead of eight.
-
 ### Manus — one address, or the ZIP
 
-Manus has *Skills → **+ Add → Import from GitHub*** as well, and the per-skill
-addresses above work there unchanged. Start with **`ds24-billing`**.
+Manus has *Skills → **+ Add → Import from GitHub*** as well, and the same address
+works there.
 
 Rather not go through GitHub:
 
 1. **[Download the pack as a ZIP](https://github.com/digistore-io/ds24-skills/archive/refs/heads/main.zip)**
    *(github.com/digistore-io/ds24-skills/archive/refs/heads/main.zip)*
-2. Unpack it. Inside you get `ds24-skills-main/skills/` with one folder per skill.
-3. In Manus: *Skills* in the left sidebar → **+ Add → Upload a skill** → drop in
-   the folder of the skill you want.
+2. Unpack it. Inside you get `ds24-skills-main/` — drop in that whole folder to
+   get the pack in one go, or a single folder out of `skills/` for just that one.
+3. In Manus: *Skills* in the left sidebar → **+ Add → Upload a skill**.
 
-Either way, **`ds24-billing`** (the entry point) and **`ds24-ipn`** (the one that
-does the work) are the two worth having; the rest can follow whenever you need
-them. Invoke one directly with `/ds24-billing`.
+Invoke it directly with `/ds24-skills`, or just ask for Digistore24 billing.
 
 ### Replit, v0, Claude Code, Codex — one command
 
 ```bash
-npx skills add digistore-io/ds24-skills
+npx skills add https://github.com/digistore-io/ds24-skills/tree/main/skills
 ```
+
+**The address ends in `/skills`, and that matters.** Pointed at the repository
+itself the installer stops at the pack's own `SKILL.md` — the door written for
+Lovable — and installs that one skill instead of the eight. With `/skills` you
+get all eight, each loading on its own trigger, which is what you want where a
+command line exists.
 
 It installs into `.agents/skills/` — which is exactly where Replit's Agent looks
 — and links them into `.claude/skills/` for Claude Code. The bundled adapters,
@@ -239,7 +242,7 @@ and says something when they differ.
 Everywhere else, updating is the same command that installed them:
 
 ```bash
-npx skills add digistore-io/ds24-skills
+npx skills add https://github.com/digistore-io/ds24-skills/tree/main/skills
 ```
 
 ## What this is not
