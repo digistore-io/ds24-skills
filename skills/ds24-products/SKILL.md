@@ -148,8 +148,9 @@ laptop it cannot — a local address needs a tunnel first.
 ## Step 5 — before real money: approval
 
 A product can be **test-purchased** immediately, by the vendor, with the
-Digistore24 test-purchase cookie set. That is how you verify the whole chain
-without moving money.
+Digistore24 test-purchase cookie set — or, in a development environment, with
+the testpay parameter on the buy URL (**`ds24-checkout`**, Step 4a). That is
+how you verify the whole chain without moving money.
 
 Selling to the public additionally needs **marketplace approval**
 (`approval_status=pending`) — request it only once the description and the app

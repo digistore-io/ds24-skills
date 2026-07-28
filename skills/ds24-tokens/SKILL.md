@@ -109,7 +109,8 @@ Four boundaries:
 
 ## Step 5 — prove it
 
-1. Buy a credit package with a test purchase → balance credited **once**.
+1. Buy a credit package with a test purchase (cookie, or in development the
+   testpay parameter — **`ds24-checkout`**, Step 4a) → balance credited **once**.
 2. Send the same IPN again by hand → balance **unchanged**. (The verifier in
    **`ds24-ipn`** replays an event for exactly this reason, but it cannot see
    your balance — check this one by hand.)

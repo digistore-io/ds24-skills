@@ -68,7 +68,9 @@ only one that exercises Digistore24's side too.
 
 1. The vendor sets the **Digistore24 test-purchase cookie** in their browser.
    (Digistore24's help centre has the link that sets it; it is per-browser and
-   it expires.)
+   it expires.) On the live domain the cookie is the right tool — the testpay
+   parameter from development (**`ds24-checkout`**, Step 4a) belongs on URLs
+   customers can never reach, so do not carry it over here.
 2. Buy the product through the app's own buy link — not a link you constructed
    by hand for the test.
 3. Watch for: the checkout shows **your** price and interval; the thank-you page
@@ -97,6 +99,12 @@ Until approval, test purchases by the vendor are the only purchases possible.
 That is the correct state to be in while building.
 
 ## Step 5 — the day it is live
+
+**First, rotate the test-purchase key** if the integration ever used the
+testpay parameter during development (**`ds24-checkout`**, Step 4a): call
+`getTestpayKey` with `do_recreate=1`. The key is account-level — a copy handed
+around while building would unlock test "purchases" on the live checkout for
+whoever still holds it. Rotating invalidates every old copy in one call.
 
 Say these three things to the user in plain words, because none of them is
 obvious:

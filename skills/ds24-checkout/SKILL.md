@@ -101,14 +101,55 @@ rejected outright ("Please only use secure URLs with https://"). On a hosted
 platform your app URL is already public, so this is a non-issue; on a laptop it
 needs a public redirect helper or a tunnel.
 
+## Step 4a — test payments while unapproved (the testpay key)
+
+A product that is not marketplace-approved yet can only be bought as a **test
+purchase**. There are two ways to unlock one, and they suit different places:
+
+- **The test-purchase cookie** — set once in the vendor's browser (Digistore24's
+  help centre has the link). Per-browser, expires. The right tool on any
+  domain a customer could also reach.
+- **The testpay parameter** — fetched via the API and appended to the buy URL,
+  so the unlock travels with the link instead of living in a browser:
+
+  ```
+  POST https://www.digistore24.com/api/call/getTestpayKey/format/json
+  Header: X-DS-API-KEY: <the key>
+  ```
+
+  Undocumented, but real. The response carries `testpay_key`,
+  `get_param_name` and `expires_at`. Append
+  `?<get_param_name>=<testpay_key>` to the buy URL (the NAME comes from the
+  response — never hardcode it) and the checkout opens in test-payment mode,
+  approved or not. Sending `do_recreate=1` rotates the key: a new one is
+  issued and every old copy stops working.
+
+Four guardrails, all load-bearing:
+
+- **Development/preview only — never on a URL a customer can reach.** A
+  checkout carrying this parameter takes test "payments": whoever clicks it
+  gets the product for free. Gate it on your environment with an allowlist
+  (anything not clearly development counts as production and refuses), and
+  append it at render/click time.
+- **Never into a cached or shared buy URL.** If buy URLs are cached (Step 1),
+  cache the clean URL and append the parameter after the cache — a decorated
+  URL in a shared cache is served to everybody.
+- **The key is account-level — treat it like a secret.** It works on EVERY
+  checkout URL of this vendor account, live ones included. Keep it out of the
+  repo and out of deployed configuration.
+- **Rotate before go-live** (`do_recreate=1`) — see **`ds24-golive`**.
+
 ## Step 5 — prove it
 
 1. Create a buy URL and open it. The checkout page must show **your** price,
    currency and interval — if it shows something else, the payment plan did not
    travel.
-2. Do a **test purchase** with the Digistore24 test-purchase cookie set.
+2. Do a **test purchase** — with the Digistore24 test-purchase cookie set, or
+   in a development environment with the testpay parameter appended (Step 4a).
 3. Check that the IPN arrived and that the order came out **attributed to the
    right account**. Attribution is the part that looks fine until it is not.
+   Test purchases arrive with `api_mode=test` in the IPN payload — process
+   them like live ones (that identical path is what the test proves).
 
 ## Step 6 — what comes next
 
