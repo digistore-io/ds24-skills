@@ -131,6 +131,13 @@ Write these down in the app's own notes, because they are invisible in review:
   payload, answer `200`, grant nothing. Never map an unrecognised product id
   onto a default plan: that hands out access for a purchase that was never
   yours, and it is a mistake nobody notices until the wrong person is inside.
+- **One offer can have SEVERAL product ids — map every one of them.** A
+  Digistore24 product carries exactly one language, so a multilingual shop sells
+  each offer through one product per language (**`ds24-products`**), and the
+  payload names whichever one the buyer actually used. Map only the German id
+  and every English purchase falls into the rule directly above: a paying
+  customer, correctly recorded, granted nothing. Look the payload's `product_id`
+  up across **all** ids of all offers, and resolve them to the same product key.
 
 ## Step 5 — prove it
 

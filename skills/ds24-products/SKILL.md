@@ -60,14 +60,65 @@ only work when the plan travels with the checkout call. So the price goes to
 
 One price, one place. A second list in the code is a list that drifts.
 
+**If your app speaks more than one language, the entry holds one product id per
+language** — not one id. The reason is Step 3; get the shape right here, because
+changing it after the first sale means new products and new approvals:
+
+```
+pro:
+  name:      "Pro"
+  priceCents: 3900
+  productIds:            # one Digistore24 product per language
+    de: null
+    en: null
+```
+
 ## Step 3 — create the products
 
-`createProduct` / `updateProduct` with the name, description and language.
+`createProduct` / `updateProduct` with the name, description and **`language`**.
 Write the returned product id back into your price list so the mapping is
 recorded, not re-derived.
 
+### One product per offer AND language — this is the one people get wrong
+
+**A Digistore24 product carries exactly ONE language, and that language is the
+language of the ORDER FORM your buyer fills in** — the field labels, the
+buttons, the payment-method names, the cancellation terms. It is
+`data[language]` on the product.
+
+**`createBuyUrl` has no language parameter.** Its arguments are `product_id`,
+`buyer`, `payment_plan`, `tracking`, `valid_until`, `urls`, `placeholders`,
+`settings` and `addons` — there is nothing in there to override the product's
+language with, and no URL parameter does it either. So you cannot decide the
+form's language at checkout time. You decide it by **choosing which product to
+send the buyer to**.
+
+An app whose interface speaks German and English therefore needs **two
+Digistore24 products per offer**, one with `language=de` and one with
+`language=en`, and the checkout picks by the visitor's language. Send everybody
+to one product and half your customers are asked for their card details in a
+language they did not choose — which is exactly where a purchase is abandoned.
+
+Three consequences worth writing into whatever you build:
+
+- **Set `data[language]` explicitly on every product.** Left out, Digistore24
+  falls back to the language of the API session — nobody's deliberate choice,
+  and the usual cause of a German shop showing English order forms.
+- **Cover every language your app has.** One that is missing should still sell
+  (fall back to another product rather than showing a dead button) — but say so
+  in your sync's output, because nothing else ever will: the app renders fine,
+  the checkout opens, the purchase completes.
+- **Each language product is approved separately**, at the marketplace its own
+  language belongs to. See the **`ds24-golive`** skill.
+
+Your product *copy* is a separate question. Sending the same name and
+description to both products is a perfectly good default — the *form* around it
+is what has to follow the buyer.
+
 Make this **idempotent**: run it twice and the second run updates rather than
-creating a duplicate. Key it on your own product key, not on the name.
+creating a duplicate. Key it on your own product key **plus the language** —
+they are two products and each needs its own stable handle — and not on the
+display name, which is the same for both.
 
 **Deleting a product from your list does not unpublish it.** A product
 Digistore24 already knows stays buyable until the user deactivates it there.

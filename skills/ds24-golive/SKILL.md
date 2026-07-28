@@ -115,10 +115,20 @@ That is the correct state to be in while building.
 
 **Which marketplace you submit to follows the PRODUCT's language**, not the
 app's: a German product goes to Digistore24 GmbH, Germany (`siteowner_id` 1),
-anything else to Digistore24 Inc., USA (2). An app selling in two languages
-therefore submits its two products to two different marketplaces — deriving one
-marketplace from an app-wide setting is the mistake to avoid here, because it
-silently submits your English offering to the German reseller.
+anything else to Digistore24 Inc., USA (2). Deriving one marketplace from an
+app-wide setting is the mistake to avoid here, because it silently submits your
+English offering to the German reseller.
+
+**And a multilingual app has more products than offers.** A Digistore24 product
+carries exactly one language — that is the language of the buyer's order form,
+see **`ds24-products`** — so an offer sold in German and English is *two*
+products, submitted to *two* marketplaces, each getting its own verdict.
+
+That is the trap of this step: **approved in Germany says nothing about the
+English twin.** A status display that reports per offer instead of per product
+shows a green light while half the shop cannot be sold, and the English product
+is the one nobody remembers to submit. Iterate over products, not over offers,
+and check that every one of them reaches `approved`.
 
 **Whether it was granted is readable, not guessable.** Every `listProducts` /
 `getProduct` item carries `approval_status_list` — one entry per marketplace

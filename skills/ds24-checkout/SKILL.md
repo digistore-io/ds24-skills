@@ -46,9 +46,24 @@ plan cannot carry a voucher, a trial, an upgrade or a per-link affiliate
 commission. Read the numbers from the one price list in your project (see
 **`ds24-products`**).
 
+**`product_id` also decides the LANGUAGE of the order form — pick it by the
+buyer's language.** A Digistore24 product carries exactly one language, and
+there is no parameter in this call that overrides it (look at the body above:
+`buyer`, `payment_plan`, `tracking`, `urls`, `placeholders`, `settings`,
+`addons` — no language anywhere). So a multilingual app keeps **one product id
+per language** per offer and resolves the visitor's language to one of them
+right here, before the call. If you send everybody to the same id, half of them
+fill in a form in the wrong language at the moment they are asked to pay. The
+**`ds24-products`** skill has the shape of the price list and the rule in full.
+
 The response is a URL. **Cache it per offering** — it is valid for the
 `valid_until` window, and creating a fresh one on every page view is a
 round-trip to Digistore24 in the path of your pricing page.
+
+⚠️ **Then the cache key has to include the language**, not just the offer key.
+One row per key means the German and the English URL evict each other on every
+page view and, in between, the cache serves one language's checkout page to the
+other language's buyer. `"<offerKey>:<language>"` is enough.
 
 **That URL is not finished yet in a development environment.** Until the
 product is marketplace-approved nobody can buy through it at all, and the way
