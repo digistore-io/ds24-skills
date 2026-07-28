@@ -98,6 +98,24 @@ gets rejected, and the second attempt is slower than the first.
 Until approval, test purchases by the vendor are the only purchases possible.
 That is the correct state to be in while building.
 
+**Whether it was granted is readable, not guessable.** Every `listProducts` /
+`getProduct` item carries `approval_status_list` — one entry per marketplace
+(`reseller_id`) with `approval_status` one of `new` (never requested),
+`pending`, `approved` or `rejected`, plus the rejection-reason fields. The
+field is not in the official API docs (verified empirically 2026-07), so read
+it defensively: a missing list or an unknown value means "cannot tell", not a
+state. Two rules:
+
+- Check the entry for **your** marketplace (`reseller_id`), not the first one
+  in the list — the list always carries all resellers.
+- **Do not re-request a product that is already `approved`.** The reseller
+  side decides on `pending` products only, and whether writing `pending` over
+  an approval resets it is undocumented — not an experiment for a live
+  account.
+
+A `rejected` product names its reason in the Digistore24 vendor account; fix
+it there, then request again.
+
 ## Step 5 — the day it is live
 
 **First, rotate the test-purchase key** if the integration ever used the

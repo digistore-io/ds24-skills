@@ -157,7 +157,10 @@ Selling to the public additionally needs **marketplace approval**
 are genuinely finished, because a half-built product gets rejected and the
 second attempt is slower.
 
-The **`ds24-golive`** skill walks that, including the test purchase.
+Whether it was granted is readable: `listProducts` / `getProduct` items carry
+`approval_status_list`, one entry per marketplace. The **`ds24-golive`** skill
+(Step 4) has the field, its value set and its pitfalls — and walks the whole
+go-live, including the test purchase.
 
 ## Step 6 — prove the connection
 
