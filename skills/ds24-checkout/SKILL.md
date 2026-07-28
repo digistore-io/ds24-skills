@@ -50,6 +50,14 @@ The response is a URL. **Cache it per offering** — it is valid for the
 `valid_until` window, and creating a fresh one on every page view is a
 round-trip to Digistore24 in the path of your pricing page.
 
+**That URL is not finished yet in a development environment.** Until the
+product is marketplace-approved nobody can buy through it at all, and the way
+to unlock a test purchase without touching your browser is to append the
+testpay parameter — **appended to the return value, after the cache, and only
+where a customer can never reach it**. Do not build the checkout and leave this
+for later: it is the step that decides whether you can prove any of the rest
+works. **Step 4a** is the recipe and the guardrails.
+
 ## Step 2 — carry the buyer's identity through
 
 The single most common failure in a Digistore24 integration is a payment that
