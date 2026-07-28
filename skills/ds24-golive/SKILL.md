@@ -91,7 +91,22 @@ half that protects you.
 
 ## Step 4 — approval
 
-Only now. Request marketplace approval (`approval_status=pending`) once the
+**First: does approval apply to this vendor at all?** Only the four Digistore24
+**resellers** approve products — Germany (`siteowner_id` 1), USA (2), UK (3),
+Ireland (4). Any other siteowner is a **Direct Seller**: the vendor sells on
+their own account, and there is no approval step, nothing to request and nothing
+to wait for. **Skip this whole step for them**, and do not build a reminder
+about it either — a nag for an approval that cannot exist never clears, and the
+vendor cannot do anything about it.
+
+Two ways to tell: a configured siteowner outside 1–4, or a product whose
+`approval_status_list` has no *active* reseller entry (`is_siteowner_active`).
+Note that an `approval_status` on a non-reseller entry means nothing — reading
+it as a verdict invents an approval nobody granted.
+
+Everything below is for a reseller vendor.
+
+Request marketplace approval (`approval_status=pending`) once the
 product description and the app are genuinely finished — a half-built product
 gets rejected, and the second attempt is slower than the first.
 
@@ -138,10 +153,7 @@ Four rules for the write itself:
 - **Do not write when you could not read.** If the status call failed, or the
   product is missing from the response, you cannot rule out an existing
   approval — so refuse and say why, rather than requesting blind. Fail-open
-  here is how an approved, selling product gets set back to pending. One state
-  that looks the same and is not: a marketplace that is simply **absent** from a
-  list you read successfully — a private siteowner Digistore24 does not report
-  on. There is nothing there to overwrite, so that request goes out normally.
+  here is how an approved, selling product gets set back to pending.
 - **Do not write to a marketplace whose `is_siteowner_active` is `"N"`.** The
   call succeeds, nobody there will ever look at it, and a status display that
   filters inactive marketplaces out will go on reporting the product as never

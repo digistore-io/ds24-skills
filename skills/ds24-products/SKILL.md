@@ -152,10 +152,16 @@ Digistore24 test-purchase cookie set — or, in a development environment, with
 the testpay parameter on the buy URL (**`ds24-checkout`**, Step 4a). That is
 how you verify the whole chain without moving money.
 
-Selling to the public additionally needs **marketplace approval**
-(`approval_status=pending`) — request it only once the description and the app
-are genuinely finished, because a half-built product gets rejected and the
-second attempt is slower.
+Selling to the public through a **reseller** additionally needs **marketplace
+approval** (`approval_status=pending`) — request it only once the description
+and the app are genuinely finished, because a half-built product gets rejected
+and the second attempt is slower.
+
+**A Direct Seller has no approval step at all.** Only siteowners 1 (Germany),
+2 (USA), 3 (UK) and 4 (Ireland) are resellers and approve products; a vendor
+selling on their own account has nothing to request and nothing to wait for.
+Check which you are dealing with before you promise the user an approval step —
+or build a reminder they can never satisfy.
 
 Whether it was granted is readable: `listProducts` / `getProduct` items carry
 `approval_status_list`, one entry per marketplace. The **`ds24-golive`** skill
