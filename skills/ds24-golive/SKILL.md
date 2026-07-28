@@ -124,8 +124,13 @@ Ignore an entry whose `is_siteowner_active` is `"N"`: that marketplace cannot
 act, so its verdict says nothing — and treating it as a real state produces a
 warning about a marketplace nobody can use.
 
-Two rules for the write itself:
+Four rules for the write itself:
 
+- **`pending` is the only status worth writing.** `updateProduct` will accept
+  the others, and that is the trap: writing `approved` onto your own product
+  makes every status display believe it sells, so whatever reminder you built
+  goes quiet for a product no reseller ever looked at. `new` withdraws a request
+  that was already queued. `approved` and `rejected` belong to the reseller.
 - **Do not re-request a product that is already `approved` at the marketplace
   you are writing to.** The reseller side decides on `pending` products only,
   and whether writing `pending` over an approval resets it is undocumented —
@@ -133,7 +138,14 @@ Two rules for the write itself:
 - **Do not write when you could not read.** If the status call failed, or the
   product is missing from the response, you cannot rule out an existing
   approval — so refuse and say why, rather than requesting blind. Fail-open
-  here is how an approved, selling product gets set back to pending.
+  here is how an approved, selling product gets set back to pending. One state
+  that looks the same and is not: a marketplace that is simply **absent** from a
+  list you read successfully — a private siteowner Digistore24 does not report
+  on. There is nothing there to overwrite, so that request goes out normally.
+- **Do not write to a marketplace whose `is_siteowner_active` is `"N"`.** The
+  call succeeds, nobody there will ever look at it, and a status display that
+  filters inactive marketplaces out will go on reporting the product as never
+  submitted — for ever, with repeating the request changing nothing.
 
 A `rejected` product names its reason in the Digistore24 vendor account. Fix it
 there **first**: resubmitting it unchanged gets it rejected again, and the
