@@ -17,6 +17,19 @@ what has to be proven**, so the result gets demonstrated rather than asserted.
 
 ## Install
 
+### The short way — let your agent read the instructions
+
+Paste this into whatever you are building with:
+
+```
+Read https://ds24-skills.com/start.md and follow it.
+Add Digistore24 billing to this app.
+```
+
+It works out what it is running in and takes it from there — installing the
+skills itself where it has a shell, and telling you the two clicks where it has
+not. Everything below is the same thing done by hand.
+
 **Neither Lovable nor Manus needs git or a terminal from you.** Pick your row.
 
 ### Lovable — paste one address
