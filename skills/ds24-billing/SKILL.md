@@ -20,6 +20,29 @@ and compare with the `VERSION` file in this pack. Skills imported into a
 workspace do not update themselves, so a copy can be months old. Mention a
 mismatch in one sentence, offer to re-import, then carry on either way.
 
+## Step 0b — the other seven may not be here
+
+This skill hands over to seven others by name. On Lovable and Manus every skill
+is imported on its own, so the one you are reading may be the only one present —
+and "start `ds24-ipn`" then quietly becomes "write the webhook from memory",
+which is the one outcome this pack exists to prevent.
+
+**If a skill named below is not in the workspace, fetch it rather than improvise:**
+
+```
+https://raw.githubusercontent.com/digistore-io/ds24-skills/main/skills/<name>/SKILL.md
+```
+
+The files a skill carries hang off the same address — its `references/…`,
+`scripts/…` and `adapters/…` entries with the folder name in front. Say in one
+line that you are reading it from GitHub instead of loading an installed skill,
+and suggest importing it properly afterwards, so the next session starts with it.
+
+**If you cannot fetch it either, stop and say so.** What these skills carry is
+precisely the part that looks obvious and is wrong; reconstructed from memory it
+produces an integration whose own tests pass and whose every real payment is
+refused.
+
 ## Step 1 — look at the project, do not interview the user
 
 Search first. Ask only about what genuinely leaves no trace.

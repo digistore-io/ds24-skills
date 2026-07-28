@@ -87,16 +87,24 @@ ask — do not print both and leave them to guess.
 **Lovable** — *Skills → Add → Import from GitHub*, and paste:
 
 ```
-https://github.com/digistore-io/ds24-skills
+https://github.com/digistore-io/ds24-skills/tree/main/skills/ds24-billing
 ```
 
-That is the whole installation. Lovable pulls the skills straight from the
-repository: no download, no unpacking, nothing installed on their machine.
+That is enough to start: no download, no unpacking, nothing installed on their
+machine. **Give them that address, not `github.com/digistore-io/ds24-skills`** —
+Lovable reads a whole-repository address as one skill, looks for a `SKILL.md`
+next to the README, does not find one, and refuses the import. The pack is eight
+skills in eight folders, so each has its own address; the other seven are the
+same line with the folder name swapped (`ds24-products`, `ds24-ipn`,
+`ds24-entitlements`, `ds24-checkout`, `ds24-tokens`, `ds24-golive`,
+`ds24-compliance`). They can add those later — `ds24-billing` fetches whatever it
+needs in the meantime.
 
-**Manus, through the interface** — download
+**Manus, through the interface** — it has *Skills → + Add → Import from GitHub*
+too, and the same address works. Otherwise: download
 `https://github.com/digistore-io/ds24-skills/archive/refs/heads/main.zip`, unpack
-it, then *Skills → + Add → Upload a skill* and drop in the `skills` folder from
-inside. If it wants one at a time, `ds24-billing` and `ds24-ipn` first.
+it, then *Skills → + Add → Upload a skill* and drop in the folder of the skill
+they want, from `ds24-skills-main/skills/`. `ds24-billing` and `ds24-ipn` first.
 
 ### B2. Do not make them wait for it
 
