@@ -98,23 +98,46 @@ gets rejected, and the second attempt is slower than the first.
 Until approval, test purchases by the vendor are the only purchases possible.
 That is the correct state to be in while building.
 
+**Which marketplace you submit to follows the PRODUCT's language**, not the
+app's: a German product goes to Digistore24 GmbH, Germany (`siteowner_id` 1),
+anything else to Digistore24 Inc., USA (2). An app selling in two languages
+therefore submits its two products to two different marketplaces — deriving one
+marketplace from an app-wide setting is the mistake to avoid here, because it
+silently submits your English offering to the German reseller.
+
 **Whether it was granted is readable, not guessable.** Every `listProducts` /
 `getProduct` item carries `approval_status_list` — one entry per marketplace
 (`reseller_id`) with `approval_status` one of `new` (never requested),
-`pending`, `approved` or `rejected`, plus the rejection-reason fields. The
-field is not in the official API docs (verified empirically 2026-07), so read
-it defensively: a missing list or an unknown value means "cannot tell", not a
-state. Two rules:
+`pending`, `approved` or `rejected`, plus `is_siteowner_active` and the
+rejection-reason fields. The field is not in the official API docs (verified
+empirically 2026-07), so read it defensively: a missing list or an unknown value
+means "cannot tell", not a state.
 
-- Check the entry for **your** marketplace (`reseller_id`), not the first one
-  in the list — the list always carries all resellers.
-- **Do not re-request a product that is already `approved`.** The reseller
-  side decides on `pending` products only, and whether writing `pending` over
-  an approval resets it is undocumented — not an experiment for a live
-  account.
+**There are two different questions, and they need different reads:**
 
-A `rejected` product names its reason in the Digistore24 vendor account; fix
-it there, then request again.
+| Question | How to read the list |
+|---|---|
+| *Can this product be sold at all?* — for a status display or a reminder | Aggregate across every marketplace the account is **active** for: **approved anywhere wins**, else pending, else rejected, else new. A product approved in Germany sells in Germany whatever the US reseller decided |
+| *Should I request approval here?* — before a write | The entry for **that one** `reseller_id`. A product approved in Germany may still have a legitimate request to make in the USA |
+
+Ignore an entry whose `is_siteowner_active` is `"N"`: that marketplace cannot
+act, so its verdict says nothing — and treating it as a real state produces a
+warning about a marketplace nobody can use.
+
+Two rules for the write itself:
+
+- **Do not re-request a product that is already `approved` at the marketplace
+  you are writing to.** The reseller side decides on `pending` products only,
+  and whether writing `pending` over an approval resets it is undocumented —
+  not an experiment for a live account.
+- **Do not write when you could not read.** If the status call failed, or the
+  product is missing from the response, you cannot rule out an existing
+  approval — so refuse and say why, rather than requesting blind. Fail-open
+  here is how an approved, selling product gets set back to pending.
+
+A `rejected` product names its reason in the Digistore24 vendor account. Fix it
+there **first**: resubmitting it unchanged gets it rejected again, and the
+second attempt is slower than the first.
 
 ## Step 5 — the day it is live
 
