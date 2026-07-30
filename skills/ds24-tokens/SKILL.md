@@ -94,13 +94,45 @@ It only works if the purchase stored payment details, which for a one-off means
 sending `settings[force_rebilling]=Y` on the buy URL (see **`ds24-checkout`**).
 Decide that at checkout time — it cannot be added afterwards.
 
-Four boundaries:
+Five boundaries:
 
 - **The customer must have agreed** to being charged again, in words, before
   the first automatic charge. This is a payment authorisation, not a setting.
 - **One charge in flight at a time.** Mark the account while a top-up is
   outstanding and clear it when the IPN confirms, or a slow response becomes two
   charges.
+- **Count the charges the IPN never confirmed, and stop after two.** This is the
+  one that bites, and it bites *because* of the boundary above.
+
+  The mark has to expire — a process that dies holding it would freeze the
+  account for ever. But now think about the IPN that never arrives at all: the
+  card was charged, the balance was never credited, so the balance is still
+  under the threshold, and the moment the mark expires the next spend charges
+  the card **again**. And again. For as long as the customer's balance stays
+  low, which is for ever, because the credit that would raise it is the thing
+  that never came.
+
+  Digistore24 allows ten charges a day per purchase, so its limit does not save
+  you: a six-hour expiry gives four charges a day and stays comfortably under
+  it.
+
+  **Nothing about this looks like a fault.** Every charge SUCCEEDS. No error is
+  thrown, no request fails, and the customer's own auto-top-up setting still
+  reads "on". The only anomaly is a credit that did not arrive, and nothing
+  watches for that unless you make it.
+
+  So keep a counter next to the mark — charges since the last one that came back
+  as a booked credit — increment it in the same atomic write that takes the
+  mark, and refuse to charge once it reaches two. Reset it to zero when a credit
+  actually books. Two rather than one, because a single unconfirmed charge is
+  the normal state of every healthy top-up while the IPN is in flight, and
+  Digistore24 is allowed to be slower than your expiry.
+
+  **Pause, do not switch their setting off.** Nothing about what the customer
+  asked for changed — only your confidence that the charge reaches them. It then
+  resumes by itself the moment a credit books. And tell **yourself**, not them:
+  their setting is still on and still correct, so put it where whoever supports
+  this app will see it.
 - **A failed top-up is not an error to hide.** Tell the customer their balance
   ran out and the top-up did not go through.
 - **Never top up on somebody else's behalf.** If your app has any kind of
@@ -118,6 +150,12 @@ Four boundaries:
    work, and no ledger row is written.
 4. Refund the package → the credits come back out, the way you decided in
    Step 2.
+5. **Trigger an automatic top-up and then throw the IPN away** — do not deliver
+   it. Wait out your expiry, spend again, wait it out again, spend again. The
+   card must be charged **twice and then never again**, and something you can
+   read has to say which account it happened to. Skipping this one is how the
+   loop in Step 4 ships: every other test passes with it in place, because
+   every individual charge works.
 
 ## Step 6 — what comes next
 
