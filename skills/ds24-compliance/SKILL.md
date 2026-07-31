@@ -100,6 +100,25 @@ speaks**. Not in the terms. Where the conversation happens.
 Write it as a rule rather than a one-off: *anything here that talks to a person
 as a machine says so*. Whatever AI feature gets added next inherits it.
 
+**An AI that reads what the user PRODUCED owes the notice earlier, and owes a
+different sentence.** A support chat is easy: the interaction is a question
+somebody chose to ask, and "this is an AI" arrives in time. But an app that asks
+its user to hand over their draft, their answer, their plan — and then has a
+model read it — has already had its first interaction the moment they start
+typing. So:
+
+- the notice is readable **before they write**, not once there is a transcript
+  and not once anything has loaded;
+- it says **what happens to what they write**, not only what the thing is. *"An
+  AI reads what you write here and answers it"* tells somebody what they are
+  agreeing to; *"powered by AI"* does not.
+
+The same applies to what goes in the privacy policy. A sentence like *"nothing
+about you is sent to the AI"* is true of a handbook chatbot and **false** of
+anything that reads the user's own work — and it is false in a legal document,
+which is the worst place to be wrong. If the app has both, scope both: say which
+one is sent nothing and which one is sent what the user submits.
+
 ## Step 5 — the customer's own data
 
 Two obligations, and both are ordinary engineering once you have Step 1:
