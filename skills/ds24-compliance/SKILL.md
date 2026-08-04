@@ -64,6 +64,23 @@ commercial-register entry.
 Build the page and **fail loudly while it is empty**. A placeholder imprint that
 ships is worse than none: it is visibly false information about who is selling.
 
+**The imprint travels in two shapes, and neither transfers to the other:**
+
+- **On the pages, a footer LINK is the complete answer** — named "Impressum" /
+  "Imprint", one click away, on every page. Do not copy the imprint's text
+  into page footers: "easily recognisable, directly reachable" asks for the
+  link, and an inlined second copy is the one that drifts.
+- **In the mails the app sends** — sign-in links, confirmations, notices —
+  **the imprint's CONTENT belongs at the bottom of the mail itself.** A mail
+  sent in the course of business is a business letter, and its recipient
+  holds no footer to click; for registered companies the letter rules
+  (Germany: § 35a GmbHG, § 125a HGB) ask for the provider details *in* the
+  letter. Render it as plain text lines under the mail's footer — and never
+  mail a placeholder: no imprint block in the mail until the real imprint
+  exists. One exception is allowed and deliberate: a pure security notice
+  built to carry nothing clickable stays bare, because an imprint contains
+  web and mail addresses and clients auto-link them.
+
 ## Step 3 — probably no cookie banner, and that is not laziness
 
 **A purchase does not need consent.** It runs on GDPR Art. 6(1)(b) — performing
