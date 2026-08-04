@@ -73,6 +73,15 @@ pro:
     en: null
 ```
 
+**And if the app has more than one environment, keep one product SET per
+environment** (dev / prod — staging only if it really exists). Products you
+create against a preview or development URL are test articles: give them their
+own ids in the registry, mark them visibly in the product name (`"Pro [DEV]"`
+— the Digistore24 API has no tag field, the name is what a human sees in the
+backoffice), and leave the live products' names clean. One set must never
+claim the other's products — see the idempotency note below. A vendor who
+only ever syncs against the live domain has one set, and that is fine.
+
 ## Step 3 — create the products
 
 `createProduct` / `updateProduct` with the name, description and **`language`**.
@@ -117,8 +126,9 @@ is what has to follow the buyer.
 
 Make this **idempotent**: run it twice and the second run updates rather than
 creating a duplicate. Key it on your own product key **plus the language** —
-they are two products and each needs its own stable handle — and not on the
-display name, which is the same for both.
+and, if you keep separate sets per environment, **plus the environment**
+(`pro__en__prod`) — each product needs its own stable handle. Never key on the
+display name, which is the same for both languages and changes with the copy.
 
 **Deleting a product from your list does not unpublish it.** A product
 Digistore24 already knows stays buyable until the user deactivates it there.

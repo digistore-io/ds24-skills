@@ -91,6 +91,10 @@ half that protects you.
 
 ## Step 4 — approval
 
+Approval is for the **live** products. If you kept a separate development
+set (`ds24-products`, Step 2), never submit it — a "[DEV]" product on a
+marketplace is a rejection you asked for, and test purchases need no approval.
+
 **First: does approval apply to this vendor at all?** Only the four Digistore24
 **resellers** approve products — Germany (`siteowner_id` 1), USA (2), UK (3),
 Ireland (4). Any other siteowner is a **Direct Seller**: the vendor sells on
